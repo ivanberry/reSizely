@@ -32,14 +32,14 @@ const Result = (props: any) => {
       }
       copyTextToClipboard(result)
     },
-    [resultId, data.url]
+    [resultId, data]
   )
 
   const save = useCallback(() => {
     downloadImage(data.url).catch(() => {
       toast.error('download image fail')
     })
-  }, [resultId, data.url])
+  }, [resultId, data])
 
   // TODO: 做一个loading页面，暂时只有这里需要Loading
   return !data && !error ? (
