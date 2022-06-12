@@ -1,20 +1,20 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { IMAGE_MAP_WITH_TYPE } from "../../utils/data";
-import Template from "../../components/TemplateImage";
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { IMAGE_MAP_WITH_TYPE } from '../../utils/data'
+import Template from '../../components/TemplateImage'
 
 interface ICategory {
-  imageType: string;
-  feature: any[];
+  imageType: string
+  feature: any[]
 }
 
-export default () => {
-  const router = useRouter();
-  const { type } = router.query;
+const Category = () => {
+  const router = useRouter()
+  const { type } = router.query
 
   const [categoryImages, setCategoryImages] = useState<ICategory[]>([
-    { imageType: "", feature: [] },
-  ]);
+    { imageType: '', feature: [] },
+  ])
 
   useEffect(() => {
     // [
@@ -23,11 +23,11 @@ export default () => {
     //   { imageType: "12", feature: ["胸围"] },
     //   { imageType: "22", feature: ["臂展"] },
     // ]
-    const images = IMAGE_MAP_WITH_TYPE.get(type as string);
+    const images = IMAGE_MAP_WITH_TYPE.get(type as string)
     if (images) {
-      setCategoryImages(images);
+      setCategoryImages(images)
     }
-  }, [type]);
+  }, [type])
 
   return (
     <section className="pt-4">
@@ -40,5 +40,7 @@ export default () => {
         ))}
       </ul>
     </section>
-  );
-};
+  )
+}
+
+export default Category

@@ -5,6 +5,7 @@ import { MouseEventHandler, useCallback } from 'react'
 import { copyTextToClipboard, downloadImage } from '../../lib/utils'
 import { debounce } from 'lodash'
 import { toast } from 'react-toastify'
+import Image from 'next/image'
 
 const Result = (props: any) => {
   const router = useRouter()
@@ -31,14 +32,14 @@ const Result = (props: any) => {
       }
       copyTextToClipboard(result)
     },
-    [resultId]
+    [resultId, data.url]
   )
 
   const save = useCallback(() => {
     downloadImage(data.url).catch(() => {
       toast.error('download image fail')
     })
-  }, [resultId])
+  }, [resultId, data.url])
 
   // TODO: 做一个loading页面，暂时只有这里需要Loading
   return !data && !error ? (
@@ -72,7 +73,7 @@ const Result = (props: any) => {
       </section>
       <section>
         <p className="my-3">Preview</p>
-        <img src={data.url} alt="" />
+        <Image src={data.url} alt="结果图片" />
       </section>
     </div>
   )

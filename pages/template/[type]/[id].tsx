@@ -91,7 +91,12 @@ export default function Template(props: IProps) {
   return (
     <section className="container gap-8 columns-1">
       <Controller onSwitch={switchFn} />
-      <Image src={`/images/${id}.jpg`} width={400} height={400} />
+      <Image
+        src={`/images/${id}.jpg`}
+        width={400}
+        height={400}
+        alt="类型图片"
+      />
       <section>
         <button onClick={add}>Add</button>
         <EditableTable header={tableHeader} body={tableBody} update={update} />
