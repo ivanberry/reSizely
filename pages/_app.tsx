@@ -13,6 +13,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <NextNProgress />
       <SWRConfig
         value={{
+          // @ts-ignore
           fetcher: (...args) => request(...args),
         }}
       >

@@ -4,6 +4,7 @@
  * @param text
  */
 import { toast } from 'react-toastify'
+import useSWR from 'swr'
 
 // TODO: fail to notice
 function fallbackCopyTextToClipboard(text: any) {
@@ -45,4 +46,21 @@ function copyTextToClipboard(text: any) {
   )
 }
 
-export { copyTextToClipboard }
+/**
+ * 利用图片地址下载图片
+ * @param imageSrc
+ */
+async function downloadImage(imageSrc: string) {
+  const image = await fetch(imageSrc)
+  const imageBlog = await image.blob()
+  const imageURL = URL.createObjectURL(imageBlog)
+
+  const link = document.createElement('a')
+  link.href = imageURL
+  link.download = 'image file name here'
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
+
+export { copyTextToClipboard, downloadImage }

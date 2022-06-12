@@ -2,8 +2,9 @@ import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import Loading from '../../components/Loading'
 import { MouseEventHandler, useCallback } from 'react'
-import { copyTextToClipboard } from '../../lib/utils'
+import { copyTextToClipboard, downloadImage } from '../../lib/utils'
 import { debounce } from 'lodash'
+import { toast } from 'react-toastify'
 
 const Result = (props: any) => {
   const router = useRouter()
@@ -14,11 +15,32 @@ const Result = (props: any) => {
   /**
    * 复制
    */
-  const copy: MouseEventHandler<HTMLButtonElement> = useCallback(() => {
-    copyTextToClipboard(data.url)
+  const copy: (type: string) => void = useCallback(
+    (type: string) => {
+      let result = ''
+      switch (type) {
+        case 'url':
+          result = data.url
+          break
+        case 'html':
+          result = `<img src={data.url} width={100%} height={100%} alt="模版结果图片" />`
+          break
+        default:
+          result = `<iframe src='${data.url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`
+          break
+      }
+      copyTextToClipboard(result)
+    },
+    [resultId]
+  )
+
+  const save = useCallback(() => {
+    downloadImage(data.url).catch(() => {
+      toast.error('download image fail')
+    })
   }, [resultId])
 
-  // TODO: 做一个loading页面，暂时只有这里需要LoadinU
+  // TODO: 做一个loading页面，暂时只有这里需要Loading
   return !data && !error ? (
     <Loading />
   ) : (
@@ -27,13 +49,15 @@ const Result = (props: any) => {
         <p className="py-2">size chart url</p>
         <p className="py-4">{data.url}</p>
         <div className="flex justify-between max-w-md m-auto">
-          <button onClick={copy} className="btn-primary">
+          {/*// @ts-ignore*/}
+          <button onClick={copy.bind(null, 'url')} className="btn-primary">
             Copy URL
           </button>
-          <button onClick={copy} className="btn-primary">
+          {/*// @ts-ignore*/}
+          <button onClick={copy.bind(null, 'html')} className="btn-primary">
             Copy HTML
           </button>
-          <button onClick={copy} className="btn-primary">
+          <button onClick={save} className="btn-primary">
             Save Image
           </button>
         </div>
@@ -41,6 +65,7 @@ const Result = (props: any) => {
       <section className="my-3">
         <p>Dynamic size Chart</p>
         <p className="py-4">{`<iframe src='${data.url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`}</p>
+        {/*// @ts-ignore*/}
         <button onClick={copy} className="btn-primary">
           Copy Code
         </button>
