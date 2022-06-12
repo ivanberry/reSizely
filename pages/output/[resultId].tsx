@@ -73,7 +73,7 @@ const Result = (props: any) => {
       </section>
       <section>
         <p className="my-3">Preview</p>
-        <Image src={data.url} alt="结果图片" />
+        <img src={data.url} alt="结果图片" />
       </section>
     </div>
   )
