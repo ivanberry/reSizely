@@ -97,13 +97,15 @@ export default function Template(props: IProps) {
         height={400}
         alt="类型图片"
       />
-      <section>
-        <button onClick={add}>Add</button>
+      <section className='my-8'>
         <EditableTable header={tableHeader} body={tableBody} update={update} />
       </section>
-      <button onClick={generate} className="btn-primary">
+      <section className='my-4'>
+      <button className='btn-primary mx-1' onClick={add}>Add Table Row</button>
+      <button onClick={generate} className="btn-primary mx-1">
         Generate
       </button>
+      </section>
     </section>
   )
 }
