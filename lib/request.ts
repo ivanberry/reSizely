@@ -3,7 +3,8 @@ import { toast } from 'react-toastify'
 
 // 区分环境
 const instance = axios.create({
-  baseURL: 'https://mockend.com/ivanberry/reSizely',
+  // baseURL: 'https://mockend.com/ivanberry/reSizely',
+  baseURL: '/api',
 })
 
 // Add a request interceptor

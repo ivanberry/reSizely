@@ -3,31 +3,22 @@
  * @constructor
  */
 
-import Link from "next/link";
+import Link from 'next/link'
+import { useContext } from 'react'
+import { CategoryContext } from '../pages/_app'
 
 export default function Header() {
-	return (
-		<ul className="flex flex-row">
+  const value = useContext(CategoryContext)
+  return (
+    <ul className={'flex flex-row'}>
       <li className="px-6 py-3">
-				<Link href="/">
-				Index
-				</Link>
-			</li>
-			<li className="px-6 py-3">
-				<Link href="/category/tops">
-				Tops
-				</Link>
-			</li>
-			<li className="px-6 py-3">
-				<Link href="/category/bottoms">
-					Bottoms
-				</Link>
-				</li>
-			<li className="px-6 py-3">
-				<Link href="/category/dresses">
-					Dresses
-				</Link>
-			</li>
-		</ul>
-	)
+        <Link href="/">Index</Link>
+      </li>
+      {value.map((item) => (
+        <li className={'px-6 py-3'}>
+          <Link href={`/category/${item.name}`}>{item.name}</Link>
+        </li>
+      ))}
+    </ul>
+  )
 }

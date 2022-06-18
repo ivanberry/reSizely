@@ -1,33 +1,33 @@
-import type { NextPage } from "next";
-import { useEffect, useState } from "react";
-import TemplateImage from "../components/TemplateImage";
-import { IMAGE_MAP_WITH_TYPE } from "../utils/data";
+import type { NextPage } from 'next'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { ICategory, INIT } from '../type.d.ts'
+import { CategoryContext } from './_app'
+import TemplateImage from '../components/TemplateImage'
 
-interface ICategory {
-  imageType: string;
-  feature: any[];
-}
-
-const Home: NextPage = () => {
-  const [images, setImages] = useState<ICategory[]>([
-    { imageType: "", feature: [] },
-  ]);
-
-  useEffect(() => {
-    setImages(IMAGE_MAP_WITH_TYPE.get("all") as ICategory[]);
-  }, []);
+const Home = () => {
+  const categoryList = useContext(CategoryContext)
 
   return (
+    // @ts-ignore
     <section className="pt-4">
-      <ul className="container grid grid-cols-3 justify-evenly justify-items-center">
-        {images.map(({ imageType, feature }) => (
-          <li key={imageType}>
-            <TemplateImage src={imageType} type={"all"} />
-          </li>
-        ))}
-      </ul>
+      {categoryList.map((c, index) => (
+        <div key={c.cat_id + index}>
+          <h2>{c.name}</h2>
+          <ul className="container grid grid-cols-3 justify-evenly justify-items-center">
+            {c.items.map(({ item_id, name, img }, index) => (
+              <li key={item_id + index}>
+                <TemplateImage
+                  item_id={item_id}
+                  src={img}
+                  type={name.split(' ').join('_')}
+                />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
