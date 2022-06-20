@@ -7,6 +7,8 @@ import Controller from '../../../components/Controller'
 import EditableTable from '../../../components/EditableTable'
 import { IMAGE_MAP_WITH_TYPE } from '../../../utils/data'
 import request from '../../../lib/request'
+import { IMeasure, ITemplate } from '../../../type.d.ts'
+import { IMAGE_PATH } from '../../../lib/contant'
 
 interface IProps {
   type: string
@@ -26,30 +28,45 @@ export default function Template(props: IProps) {
   const router = useRouter()
   const { id, type } = router.query
 
+  console.log('id type: ', id, type)
+
+  // todo: 图片需要将measure绘制到图上
+  const [imgSrc, setImgSrc] = useState<string>('')
+
   const [unit, setUnit] = useState<string>('')
   const [tableBody, setTableBody] = useState<any>([])
   const [tableHeader, setTableHeader] = useState<any>([])
 
-  useEffect(() => {
-    // @ts-ignore
-    const header = IMAGE_MAP_WITH_TYPE.get(type as string)
-      .find((item: any) => item.imageType === id)
-      .feature.map((f: any, index: number) => ({
-        name: f,
-        key: index,
-        type: 'feature',
-      }))
+  // use the id to request particular data
+  const getData = useCallback(() => {
+    request(`/template/${id}`).then((res) => {
+      const { img, svg, measures } = res.data
+      setImgSrc(img)
+      generateTable(measures)
+    })
+  }, [id, type])
 
-    const body = Array(header.length + 2)
+  const generateTable = (data: IMeasure[]) => {
+    const header = data.map((item) => ({
+      name: item.name,
+      key: item.measure_id,
+      type: 'feature',
+    }))
+
+    header.unshift({ key: count++, name: 'custom', type: 'feature' })
+
+    const body = Array(header.length + 1)
       .fill(0)
       .map((_, index) => {
         return { key: count++ }
       })
 
-    // add custom header to the header
-    header.unshift({ key: count++, name: 'custom', type: 'feature' })
-    setTableHeader(header)
     setTableBody([body])
+    setTableHeader(header)
+  }
+
+  useEffect(() => {
+    getData()
   }, [type])
 
   // 新增行, key值可以有更好的方案，比如自增数字，或者uuid
@@ -75,12 +92,15 @@ export default function Template(props: IProps) {
     // TODO: call api to get some date to render the next page
     console.log('generate: ', tableBody, tableHeader, unit)
 
-    // TODO: 把数据给后台，返回一个id，到下一个页面，通过id获取对应的数据
-    // @ts-ignore 这种类型要怎么写呢？
-    request('/templates/1').then((res: ITemplateApi) => {
-      const { id, url } = res
-      console.log('res: ', res, id, url)
-      router.push(`/output/${id}`)
+    request({
+      method: 'POST',
+      url: '/template/ack',
+    }).then((res) => {
+      // TODO: post获取一个图片地址？
+      // 此处的id可以随机一个
+      console.log('res: ', res.data.img)
+      const resultId = res.data.img.match(/\d+/g)[0]
+      router.push(`/output/${resultId}`)
     })
   }, [tableBody, tableHeader, unit])
 
@@ -92,19 +112,21 @@ export default function Template(props: IProps) {
     <section className="container gap-8 columns-1">
       <Controller onSwitch={switchFn} />
       <Image
-        src={`/images/${id}.jpg`}
+        src={`${IMAGE_PATH}/${imgSrc}`}
         width={400}
         height={400}
         alt="类型图片"
       />
-      <section className='my-8'>
+      <section className="my-8">
         <EditableTable header={tableHeader} body={tableBody} update={update} />
       </section>
-      <section className='my-4'>
-      <button className='btn-primary mx-1' onClick={add}>Add Table Row</button>
-      <button onClick={generate} className="btn-primary mx-1">
-        Generate
-      </button>
+      <section className="my-4">
+        <button className="btn-primary mx-1" onClick={add}>
+          Add Table Row
+        </button>
+        <button onClick={generate} className="btn-primary mx-1">
+          Generate
+        </button>
       </section>
     </section>
   )
