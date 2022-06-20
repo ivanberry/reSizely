@@ -6,12 +6,12 @@ import { copyTextToClipboard, downloadImage } from '../../lib/utils'
 import { debounce } from 'lodash'
 import { toast } from 'react-toastify'
 import Image from 'next/image'
+import { IMAGE_PATH } from '../../lib/contant'
 
 const Result = (props: any) => {
   const router = useRouter()
   const { resultId } = router.query
-
-  const { data, error } = useSWR(`/output/${resultId}`)
+  const url = `${IMAGE_PATH}/output/chart-${resultId}.jpg`
 
   /**
    * 复制
@@ -21,34 +21,32 @@ const Result = (props: any) => {
       let result = ''
       switch (type) {
         case 'url':
-          result = data.url
+          result = url
           break
         case 'html':
-          result = `<img src={data.url} width={100%} height={100%} alt="模版结果图片" />`
+          result = `<img src={url} width={100%} height={100%} alt="模版结果图片" />`
           break
         default:
-          result = `<iframe src='${data.url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`
+          result = `<iframe src='${url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`
           break
       }
       copyTextToClipboard(result)
     },
-    [resultId, data]
+    [resultId]
   )
 
   const save = useCallback(() => {
-    downloadImage(data.url).catch(() => {
+    downloadImage(url).catch(() => {
       toast.error('download image fail')
     })
-  }, [resultId, data])
+  }, [resultId])
 
   // TODO: 做一个loading页面，暂时只有这里需要Loading
-  return !data && !error ? (
-    <Loading />
-  ) : (
+  return (
     <div className="m-6 text-center">
       <section className="py-10">
         <p className="py-2">size chart url</p>
-        <p className="py-4">{data.url}</p>
+        <p className="py-4">{url}</p>
         <div className="flex justify-between max-w-md m-auto">
           {/*// @ts-ignore*/}
           <button onClick={copy.bind(null, 'url')} className="btn-primary">
@@ -65,7 +63,7 @@ const Result = (props: any) => {
       </section>
       <section className="my-3">
         <p>Dynamic size Chart</p>
-        <p className="py-4">{`<iframe src='${data.url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`}</p>
+        <p className="py-4">{`<iframe src='${url}' style="display: block; border: 0; width:100%; height:100%"></iframe>`}</p>
         {/*// @ts-ignore*/}
         <button onClick={copy} className="btn-primary">
           Copy Code
@@ -73,7 +71,7 @@ const Result = (props: any) => {
       </section>
       <section>
         <p className="my-3">Preview</p>
-        <img src={data.url} alt="结果图片" />
+        <img src={url} alt="结果图片" />
       </section>
     </div>
   )

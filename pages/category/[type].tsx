@@ -18,8 +18,6 @@ const Category = (props: ICategory[]) => {
   const value = useContext(CategoryContext)
   const { type } = router.query
 
-  console.log('value: ', value)
-
   const [categoryImages, setCategoryImages] = useState<ICategoryName[]>([
     INIT_NAME,
   ])

@@ -23,3 +23,17 @@ export const INIT: ICategory = {
   name: '',
   items: [INIT_NAME],
 }
+
+// template data structure
+export interface ITemplate {
+  img: string
+  measures: IMeasure[]
+  svg: ''
+}
+
+export interface IMeasure {
+  measure_id: number
+  name: string
+  left: number
+  top: number
+}
