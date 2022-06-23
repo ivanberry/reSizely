@@ -66,36 +66,35 @@ const EditableTable = (props: IEditableProps) => {
   )
 
   return (
-    <section className="table-auto">
-      <div className="header">
-        <ul className="row">
-          <li>占位li</li>
-          {header.map(({ key, name }) =>
-            name === 'custom' ? (
-              <li key={key}>
-                <input
-                  type="text"
-                  placeholder="Custom"
-                  onChange={(e) => save(e, 'custom', 'CUSTOM')}
-                />
-              </li>
-            ) : (
-              <li key={key}>{name}</li>
-            )
-          )}
+    <section className="my-10">
+      <ul className="flex space-between text-center">
+        <li className="basis-1/4"></li>
+        {header.map(({ key, name }) =>
+          name === 'custom' ? (
+            <li key={key} className="basis-1/4 border border-black">
+              <input
+              className='w-full'
+                type="text"
+                placeholder="Custom"
+                onChange={(e) => save(e, 'custom', 'CUSTOM')}
+              />
+            </li>
+          ) : (
+            <li key={key} className="basis-1/4 border border-black">
+              {name}
+            </li>
+          )
+        )}
+      </ul>
+      {body.map((item, index) => (
+        <ul key={index} className="flex space-between text-center">
+          {item.map(({ key }) => (
+            <li key={key} className="basis-1/4 border border-black">
+              <input className='w-full' type="text" onChange={(e) => save(e, key, 'BODY')} />
+            </li>
+          ))}
         </ul>
-      </div>
-      <div className="body">
-        {body.map((item, index) => (
-          <ul key={index}>
-            {item.map(({ key }) => (
-              <li key={key}>
-                <input type="text" onChange={(e) => save(e, key, 'BODY')} />
-              </li>
-            ))}
-          </ul>
-        ))}
-      </div>
+      ))}
     </section>
   )
 }

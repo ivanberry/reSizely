@@ -5,9 +5,8 @@ import { cloneDeep } from 'lodash'
 
 import Controller from '../../../components/Controller'
 import EditableTable from '../../../components/EditableTable'
-import { IMAGE_MAP_WITH_TYPE } from '../../../utils/data'
 import request from '../../../lib/request'
-import { IMeasure, ITemplate } from '../../../type.d.ts'
+import { IMeasure } from '../../../type.d.ts'
 import { IMAGE_PATH } from '../../../lib/contant'
 
 interface IProps {
@@ -117,9 +116,7 @@ export default function Template(props: IProps) {
         height={400}
         alt="类型图片"
       />
-      <section className="my-8">
-        <EditableTable header={tableHeader} body={tableBody} update={update} />
-      </section>
+      <EditableTable header={tableHeader} body={tableBody} update={update} />
       <section className="my-4">
         <button className="btn-primary mx-1" onClick={add}>
           Add Table Row
